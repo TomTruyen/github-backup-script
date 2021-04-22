@@ -18,10 +18,12 @@ function green_color() {
     echo -e "${GREEN_COLOR}\\c"
 }
 
-reset_color
 
+green_color
 now=$(date)
 echo "Starting GitHub Backup [${now}]"
+echo
+reset_color
 
 ### -------------- ###
 ### Check for curl ###
@@ -96,6 +98,7 @@ fi
 done
 
 green_color
+echo
 echo "All your ${repository_count} repositories are successfully cloned in current directory"
 echo
 reset_color
