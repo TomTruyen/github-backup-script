@@ -11,3 +11,10 @@ OUTPUT_PATH="[YOUR OUTPUT_PATH HERE]" e.g.: "~/Desktop/Backups" <br/>
 ## Run
 1) cd to the directory of the script <br/>
 2) ./github_backup_script.sh <br/>
+
+## Bad Interpretor Error Fix
+#### bash: ./github_backup_script.sh: /usr/bin/bash^M: bad interpreter: No such file or directory
+Fix: 
+1) Install dos2unix (sudo apt-get install dos2unix)
+2) Convert the shell script to unix (dos2unix -k -o github_backup_script.sh)
+3) Run the script again. It should work now.
