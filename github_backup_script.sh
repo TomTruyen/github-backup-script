@@ -99,7 +99,7 @@ done
 
 green_color
 echo
-echo "All your ${repository_count} repositories are successfully cloned in current directory"
+echo "All your ${repository_count} repositories are successfully cloned in ${OUTPUT_PATH}"
 echo
 reset_color
 
