@@ -12,6 +12,13 @@ OUTPUT_PATH="[YOUR OUTPUT_PATH HERE]" e.g.: "~/Desktop/Backups" <br/>
 1) cd to the directory of the script <br/>
 2) ./github_backup_script.sh <br/>
 
+## Automate Backups
+#### Crontab
+1) crontab -e (opens crontab file for user)
+2) 00 00 * * * bash /path/to/github_backup_script.sh
+
+In this example the backup will be made daily at midnight
+
 ## Bad Interpretor Error Fix
 #### bash: ./github_backup_script.sh: /usr/bin/bash^M: bad interpreter: No such file or directory
 Fix: 
