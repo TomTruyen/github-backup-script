@@ -64,6 +64,7 @@ reset_color
 ### Update PATH ###
 ### ------------------ ###
 green_color
+echo
 echo "Changing path to ${OUTPUT_PATH}"
 cd "${OUTPUT_PATH}"
 reset_color
