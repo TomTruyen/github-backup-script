@@ -74,28 +74,37 @@ reset_color
 ### ------------------ ###
 green_color
 echo
-repository_count=$(curl -XGET -s https://"${GITHUB_USERNAME}":"${GITHUB_TOKEN}"@api.github.com/users/"${GITHUB_USERNAME}" | jq -c --raw-output ".public_repos")
-repositories=$(curl -XGET -s https://"${GITHUB_USERNAME}":"${GITHUB_TOKEN}"@api.github.com/users/"${GITHUB_USERNAME}"/repos?per_page="${repository_count}" | jq -c --raw-output ".[] | {name, ssh_url}")
 
-for repository in ${repositories}; do
-# Name of Repository (Used to check if we have to pull or clone)
-name=$(jq -r ".name" <<< $repository)
-# SSH URL of repository (Required SSH key setup in GitHub, this can also be replaced by html_url so that ssh key is not required) 
-url=$(jq -r ".ssh_url" <<< $repository)
+page=0
+while :; do
+	page=$((page+1))
 
-# URL of repository locally (if it would exist)
-local_url="${OUTPUT_PATH}/${name}" 
+	repositories=$(curl -sf -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" "https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affiliation=owner" | jq -c --raw-output ".[] | {name, ssh_url}")
 
-if [[ -d "$local_url" ]]
-then
-    echo "Pulling ${url}..."
-    cd "${local_url}"
-    git pull --quiet
-    cd "${OUTPUT_PATH}"
-else
-    echo "Cloning ${url}..."
-    git clone --quiet "${url}"
-fi
+	echo ${repositories}
+
+	[ -z "$repositories" ] && break
+
+	for repository in ${repositories}; do
+	# Name of Repository (Used to check if we have to pull or clone)
+	name=$(jq -r ".name" <<< $repository)
+	# SSH URL of repository (Required SSH key setup in GitHub, this can also be replaced by html_url so that ssh key is not required) 
+	url=$(jq -r ".ssh_url" <<< $repository)
+
+	# URL of repository locally (if it would exist)
+	local_url="${OUTPUT_PATH}/${name}" 
+
+	if [[ -d "$local_url" ]]
+	then
+	    echo "Pulling ${url}..."
+	    cd "${local_url}"
+	    git pull --quiet
+	    cd "${OUTPUT_PATH}"
+	else
+	    echo "Cloning ${url}..."
+	    git clone --quiet "${url}"
+	fi
+	done
 done
 
 green_color
