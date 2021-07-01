@@ -81,8 +81,6 @@ while :; do
 
 	repositories=$(curl -sf -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" "https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affiliation=owner" | jq -c --raw-output ".[] | {name, ssh_url}")
 
-	echo ${repositories}
-
 	[ -z "$repositories" ] && break
 
 	for repository in ${repositories}; do
