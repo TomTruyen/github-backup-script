@@ -1,6 +1,17 @@
 # GitHub-Backup-Script
 Shell script (Linux) that automatically backups my repositories to my external hard drive
 
+## What does it do?
+It backs up all your **OWNED** repositories **including private** ones.
+
+If you want it to also back up repositories that are part of an organization then either remove 
+<pre>'&affiliation=owner'</pre>
+in the curl http string or change it to:
+<pre>'https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affilation=owner,collaborator,organization_member'</pre>
+which is the same as removing it as 'owner,collaborator,organization_member' are the default values used.
+
+For more info regarding the endpoint: https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
+
 ## Setup
 Fill in the variables in the file:
 
