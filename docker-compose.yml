@@ -1,0 +1,9 @@
+services:
+  github-backup:
+    build: .
+    container_name: github-backup
+    restart: unless-stopped
+    volumes:
+      - /mnt/ExternalHDD/Tom/GitHub-Backups:/backup
+    env_file:
+      - .env

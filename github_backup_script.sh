@@ -51,15 +51,6 @@ else
 fi
 reset_color
 
-### ---------------------- ###
-### Variables ###
-### ---------------------- ###
-green_color
-GITHUB_USERNAME="[YOUR GITHUB USERNAME]"
-GITHUB_TOKEN="[ACCESS TOKEN HERE]"
-OUTPUT_PATH="[YOUR OUTPUT_PATH HERE]"
-reset_color
-
 ### ------------------ ###
 ### Update PATH ###
 ### ------------------ ###
