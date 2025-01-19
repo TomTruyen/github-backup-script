@@ -100,17 +100,19 @@ while :; do
     then
         echo "Pulling ${url}..."
         cd "${local_url}"
-        if ! git pull --quiet; then
+		reset_color
+        if ! git pull --rebase --quiet; then
             yellow_color
             echo "Detected dubious ownership in repository at '${local_url}'"
             git config --global --add safe.directory "${local_url}"
             green_color
             echo "Added '${local_url}' to safe.directory"
-            git pull --quiet
+            git pull --rebase --quiet
         fi
         cd "${OUTPUT_PATH}"
     else
         echo "Cloning ${url}..."
+		reset_color
         if ! git clone --quiet "${url}"; then
             yellow_color
             echo "Detected dubious ownership in repository at '${local_url}'"
@@ -120,6 +122,9 @@ while :; do
             git clone --quiet "${url}"
         fi
     fi
+
+	green_color
+	echo "Repository ${name} backed up successfully"
     done
 done
 
