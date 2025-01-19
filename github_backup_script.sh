@@ -4,6 +4,7 @@ set -e
 
 RESET_COLOR="\\033[0m"
 RED_COLOR="\\033[0;31m"
+YELLOW_COLOR="\\033[0;33m"
 GREEN_COLOR="\\033[0;32m"
 
 function reset_color() {
@@ -16,6 +17,10 @@ function red_color() {
 
 function green_color() {
     echo -e "${GREEN_COLOR}\\c"
+}
+
+function yellow_color() {
+	echo -e "${YELLOW_COLOR}\\c"
 }
 
 green_color
@@ -96,7 +101,7 @@ while :; do
         echo "Pulling ${url}..."
         cd "${local_url}"
         if ! git pull --quiet; then
-            red_color
+            yellow_color
             echo "Detected dubious ownership in repository at '${local_url}'"
             git config --global --add safe.directory "${local_url}"
             green_color
@@ -107,7 +112,7 @@ while :; do
     else
         echo "Cloning ${url}..."
         if ! git clone --quiet "${url}"; then
-            red_color
+            yellow_color
             echo "Detected dubious ownership in repository at '${local_url}'"
             git config --global --add safe.directory "${local_url}"
             green_color
