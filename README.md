@@ -33,10 +33,11 @@ For more details about the GitHub API endpoint, visit: [GitHub Repositories API 
    - GITHUB_TOKEN: Your GitHub access token (e.g., abcdefghij123456798) - Generate it at [GitHub Token Settings](https://github.com/settings/tokens)
    - OUTPUT_PATH: The location where you want your backups to be saved (e.g., ~/Desktop/Backups)
 
-3. **Ensure you have your SSH key stored in** `~/.ssh`:
+3. **Ensure you have your SSH key and Git Config stored in the** `github-backup-script` directory:
 
-   - `id_ed25519` and `id_ed25519.pub` should be present in the `~/.ssh` directory.
-   - If you use a different SSH key, modify the Dockerfile to copy the correct key files.
+   - `id_ed25519` and `id_ed25519.pub` should be present in the directory of the `Dockerfile` directory.
+        - If you use a different SSH key, modify the Dockerfile to copy the correct key files.
+   - `.gitconfig` should be present in the directory of the `Dockerfile` 
 
 ## Run
 
