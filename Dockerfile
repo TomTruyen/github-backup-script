@@ -27,5 +27,12 @@ RUN crontab /etc/cron.d/github_backup
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
 
+# Copy the global git config from the current machine to the Docker container
+COPY ~/.gitconfig /root/.gitconfig
+
+# Copy the SSH keys used for Git authentication
+COPY ~/.ssh/id_ed25519 /root/.ssh/id_ed25519
+COPY ~/.ssh/id_ed25519.pub /root/.ssh/id_ed25519.pub
+
 # Run the command on container startup
 CMD cron && tail -f /var/log/cron.log

@@ -26,6 +26,11 @@ Copy `.env.example` to `.env` and set the values:
 - GITHUB_TOKEN="[ACCESS TOKEN HERE]" e.g.: "abcdefghij123456798" <br/>
 - OUTPUT_PATH="[YOUR OUTPUT_PATH HERE]" e.g.: "~/Desktop/Backups" <br/>
 
+Ensure you have your SSH key stored in `~/.ssh`:
+
+- `id_ed25519` and `id_ed25519.pub` should be present in the `~/.ssh` directory.
+- If you use a different SSH key, modify the Dockerfile to copy the correct key files.
+
 ## Run
 
 1. cd to the directory of the script <br/>
@@ -40,7 +45,7 @@ Copy `.env.example` to `.env` and set the values:
 
 In this example the backup will be made daily at midnight
 
-## Bad Interpretor Error Fix
+## Bad Interpreter Error Fix
 
 #### bash: ./github_backup_script.sh: /usr/bin/bash^M: bad interpreter: No such file or directory
 
