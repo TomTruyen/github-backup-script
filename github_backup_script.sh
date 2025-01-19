@@ -18,7 +18,6 @@ function green_color() {
     echo -e "${GREEN_COLOR}\\c"
 }
 
-
 green_color
 now=$(date)
 echo "Starting GitHub Backup [${now}]"
@@ -68,40 +67,53 @@ echo
 
 page=0
 while :; do
-	page=$((page+1))
+    page=$((page+1))
 
-	repositories=$(curl -sf -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" "https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affiliation=owner" | jq -c --raw-output ".[] | {name, ssh_url}")
+    repositories=$(curl -sf -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" "https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affiliation=owner" | jq -c --raw-output ".[] | {name, ssh_url}")
 
-	[ -z "$repositories" ] && break
+    [ -z "$repositories" ] && break
 
-	for repository in ${repositories}; do
-	# Name of Repository (Used to check if we have to pull or clone)
-	name=$(jq -r ".name" <<< $repository)
-	# SSH URL of repository (Required SSH key setup in GitHub, this can also be replaced by html_url so that ssh key is not required) 
-	url=$(jq -r ".ssh_url" <<< $repository)
+    for repository in ${repositories}; do
+    # Name of Repository (Used to check if we have to pull or clone)
+    name=$(jq -r ".name" <<< $repository)
+    # SSH URL of repository (Required SSH key setup in GitHub, this can also be replaced by html_url so that ssh key is not required) 
+    url=$(jq -r ".ssh_url" <<< $repository)
 
-	# URL of repository locally (if it would exist)
-	local_url="${OUTPUT_PATH}/${name}" 
+    # URL of repository locally (if it would exist)
+    local_url="${OUTPUT_PATH}/${name}" 
 
-	if [[ -d "$local_url" ]]
-	then
-	    echo "Pulling ${url}..."
-	    cd "${local_url}"
-	    git pull --quiet
-	    cd "${OUTPUT_PATH}"
-	else
-	    echo "Cloning ${url}..."
-	    git clone --quiet "${url}"
-	fi
-	done
+    if [[ -d "$local_url" ]]
+    then
+        echo "Pulling ${url}..."
+        cd "${local_url}"
+        if ! git pull --quiet; then
+            red_color
+            echo "Detected dubious ownership in repository at '${local_url}'"
+            git config --global --add safe.directory "${local_url}"
+            green_color
+            echo "Added '${local_url}' to safe.directory"
+            git pull --quiet
+        fi
+        cd "${OUTPUT_PATH}"
+    else
+        echo "Cloning ${url}..."
+        if ! git clone --quiet "${url}"; then
+            red_color
+            echo "Detected dubious ownership in repository at '${local_url}'"
+            git config --global --add safe.directory "${local_url}"
+            green_color
+            echo "Added '${local_url}' to safe.directory"
+            git clone --quiet "${url}"
+        fi
+    fi
+    done
 done
 
 green_color
 echo
-echo "All your ${repository_count} repositories are successfully cloned in ${OUTPUT_PATH}"
+echo "All your repositories are successfully cloned in ${OUTPUT_PATH}"
 echo
 reset_color
-
 
 ### ------ ###
 ### Footer ###
