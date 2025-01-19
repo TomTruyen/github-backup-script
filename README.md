@@ -1,56 +1,71 @@
-# GitHub-Backup-Script
+# GitHub Backup Script
 
-Shell script (Linux) that automatically backups my repositories to my external hard drive
+A shell script for Linux that automatically backs up your GitHub repositories to your external hard drive.
 
 ## What does it do?
 
-It backs up all your **OWNED** repositories **including private** ones.
+This script backs up all **OWNED** repositories, including **private** ones.
 
-If you want it to also back up repositories that are part of an organization then either remove
+If you also want to back up repositories that are part of an organization, follow these steps:
 
-<pre>'&affiliation=owner'</pre>
+1. **Modify the API query**: Either:
+   - **Remove** `&affiliation=owner` from the `curl` request, or
+   - **Update** the request URL to:
+     ```bash
+     'https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affiliation=owner,collaborator,organization_member'
+     ```
+     This change ensures that the script backs up repositories where you are an **owner**, **collaborator**, or **organization member** (the default affiliation).
 
-in the curl http string or change it to:
-
-<pre>'https://api.github.com/user/repos?per_page=100&page=${page}&visibility=all&affilation=owner,collaborator,organization_member'</pre>
-
-which is the same as removing it as 'owner,collaborator,organization_member' are the default values used.
-
-For more info regarding the endpoint: https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user
+For more details about the GitHub API endpoint, visit: [GitHub Repositories API Documentation](https://docs.github.com/en/rest/reference/repos#list-repositories-for-the-authenticated-user)
 
 ## Setup
 
-Copy `.env.example` to `.env` and set the values:
+1. **Copy the `.env.example` file** to `.env`:
 
-- GITHUB_USERNAME="[YOUR GITHUB USERNAME]" e.g.: "TomTruyen" <br/>
-- GITHUB_TOKEN="[ACCESS TOKEN HERE]" e.g.: "abcdefghij123456798" <br/>
-- OUTPUT_PATH="[YOUR OUTPUT_PATH HERE]" e.g.: "~/Desktop/Backups" <br/>
+   ```bash
+   cp .env.example .env
 
-Ensure you have your SSH key stored in `~/.ssh`:
+   ```
 
-- `id_ed25519` and `id_ed25519.pub` should be present in the `~/.ssh` directory.
-- If you use a different SSH key, modify the Dockerfile to copy the correct key files.
+2. **Set the values in the** `.env` file:
+
+   - GITHUB_USERNAME: Your GitHub username (e.g., TomTruyen)
+   - GITHUB_TOKEN: Your GitHub access token (e.g., abcdefghij123456798) - Generate it at [GitHub Token Settings](https://github.com/settings/tokens)
+   - OUTPUT_PATH: The location where you want your backups to be saved (e.g., ~/Desktop/Backups)
+
+3. **Ensure you have your SSH key stored in** `~/.ssh`:
+
+   - `id_ed25519` and `id_ed25519.pub` should be present in the `~/.ssh` directory.
+   - If you use a different SSH key, modify the Dockerfile to copy the correct key files.
 
 ## Run
 
-1. cd to the directory of the script <br/>
-2. ./github_backup_script.sh <br/>
+To start the script using Docker, run:
 
-## Automate Backups
+```bash
+docker-compose up -d --build
+```
 
-#### Crontab
+## Errors
 
-1. crontab -e (opens crontab file for user)
-2. 00 00 \* \* \* bash /path/to/github_backup_script.sh
+### Bad Interpreter
 
-In this example the backup will be made daily at midnight
+```bash
+bash: ./github_backup_script.sh: /usr/bin/bash^M: bad interpreter: No such file or directory
+```
 
-## Bad Interpreter Error Fix
+**Solution**
 
-#### bash: ./github_backup_script.sh: /usr/bin/bash^M: bad interpreter: No such file or directory
+1. Install `dos2unix`
 
-Fix:
+```bash
+sudo apt install dos2unix
+```
 
-1. Install dos2unix (sudo apt-get install dos2unix)
-2. Convert the shell script to unix (dos2unix -k -o github_backup_script.sh)
-3. Run the script again. It should work now.
+2. Convert the script
+
+```bash
+dos2unix -k -o github_backup_script.sh
+```
+
+3. Try to run it again
