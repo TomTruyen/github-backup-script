@@ -51,6 +51,15 @@ fi
 reset_color
 
 ### ------------------ ###
+### Add GitHub to known hosts ###
+### ------------------ ###
+green_color
+echo
+echo "Adding GitHub to known hosts"
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+reset_color
+
+### ------------------ ###
 ### Update PATH ###
 ### ------------------ ###
 green_color
