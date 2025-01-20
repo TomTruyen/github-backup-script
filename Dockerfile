@@ -15,17 +15,12 @@ ADD github_backup_script.sh /usr/local/bin/github_backup_script.sh
 # Make the script executable
 RUN chmod +x /usr/local/bin/github_backup_script.sh
 
-# Add the cron job
-RUN echo "0 0 * * * /usr/local/bin/github_backup_script.sh" > /etc/cron.d/github_backup
+# Add the cron job directly to the crontab file
+RUN echo "*/10 * * * * /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1" >> /tmp/crontab && \
+    crontab /tmp/crontab && rm /tmp/crontab
 
-# Give execution rights on the cron job
-RUN chmod 0644 /etc/cron.d/github_backup
-
-# Apply cron job
-RUN crontab /etc/cron.d/github_backup
-
-# Create the log file to be able to run tail
-RUN touch /var/log/cron.log
+# Create log files for cron and script logs
+RUN touch /var/log/cron.log /var/log/github_backup.log
 
 # Copy the global git config from the current machine to the Docker container
 COPY .gitconfig /root/.gitconfig
@@ -34,5 +29,5 @@ COPY .gitconfig /root/.gitconfig
 COPY id_ed25519 /root/.ssh/id_ed25519
 COPY id_ed25519.pub /root/.ssh/id_ed25519.pub
 
-# Run the command on container startup
-CMD cron && tail -f /var/log/cron.log
+# Run the cron service and tail both logs to keep the container running
+CMD cron && tail -f /var/log/cron.log /var/log/github_backup.log
