@@ -1,6 +1,9 @@
 # Use an official Ubuntu as a parent image
 FROM ubuntu:latest
 
+# Set the HOME environment variable
+ENV HOME=/root
+
 # Install necessary packages
 RUN apt-get update && apt-get install -y \
     curl \
