@@ -15,8 +15,11 @@ ADD github_backup_script.sh /usr/local/bin/github_backup_script.sh
 # Make the script executable
 RUN chmod +x /usr/local/bin/github_backup_script.sh
 
-# Add the cron job directly to the crontab file
-RUN echo "*/10 * * * * /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1" >> /tmp/crontab && \
+# Export environment variables for cron jobs
+RUN printenv | grep -v "no_proxy" > /etc/environment
+
+# Add the cron job and load the environment variables before execution
+RUN echo "*/10 * * * * bash -c '. /etc/environment && /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1'" >> /tmp/crontab && \
     crontab /tmp/crontab && rm /tmp/crontab
 
 # Create log files for cron and script logs
