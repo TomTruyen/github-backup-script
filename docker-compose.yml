@@ -5,5 +5,3 @@ services:
     restart: unless-stopped
     volumes:
       - /mnt/ExternalHDD/Tom/GitHub-Backups:/backup
-    env_file:
-      - .env

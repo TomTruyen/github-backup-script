@@ -2,6 +2,9 @@
 
 set -e
 
+# Source the environment variables from the .env file
+source /etc/environment
+
 RESET_COLOR="\\033[0m"
 RED_COLOR="\\033[0;31m"
 YELLOW_COLOR="\\033[0;33m"

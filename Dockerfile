@@ -15,22 +15,25 @@ ADD github_backup_script.sh /usr/local/bin/github_backup_script.sh
 # Make the script executable
 RUN chmod +x /usr/local/bin/github_backup_script.sh
 
-# Export environment variables for cron jobs
-RUN printenv | grep -v "no_proxy" > /etc/environment
+# Copy the .env file to the Docker image
+COPY .env /tmp/.env
 
-# Add the cron job and load the environment variables before execution
-RUN echo "*/10 * * * * bash -c '. /etc/environment && /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1'" >> /tmp/crontab && \
+# Append the .env values to /etc/environment
+RUN cat /tmp/.env >> /etc/environment && rm /tmp/.env
+
+# Add the cron job
+RUN echo "*/10 * * * * /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1" >> /tmp/crontab && \
     crontab /tmp/crontab && rm /tmp/crontab
 
 # Create log files for cron and script logs
 RUN touch /var/log/cron.log /var/log/github_backup.log
 
 # Copy the global git config from the current machine to the Docker container
-COPY .gitconfig /root/.gitconfig
+COPY .gitconfig $HOME/.gitconfig
 
 # Copy the SSH keys used for Git authentication
-COPY id_ed25519 /root/.ssh/id_ed25519
-COPY id_ed25519.pub /root/.ssh/id_ed25519.pub
+COPY id_ed25519 $HOME/.ssh/id_ed25519
+COPY id_ed25519.pub $HOME/.ssh/id_ed25519.pub
 
 # Run the cron service and tail both logs to keep the container running
 CMD cron && tail -f /var/log/cron.log /var/log/github_backup.log
