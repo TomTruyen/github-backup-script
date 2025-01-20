@@ -28,8 +28,8 @@ RUN cat /tmp/.env >> /etc/environment && rm /tmp/.env
 RUN echo "0 0 * * * /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1" >> /tmp/crontab && \
     crontab /tmp/crontab && rm /tmp/crontab
 
-# Create log files for cron and script logs
-RUN touch /var/log/cron.log /var/log/github_backup.log
+# Create log files for script logs
+RUN touch /var/log/github_backup.log
 
 # Copy the global git config from the current machine to the Docker container
 COPY .gitconfig $HOME/.gitconfig
@@ -38,5 +38,5 @@ COPY .gitconfig $HOME/.gitconfig
 COPY id_ed25519 $HOME/.ssh/id_ed25519
 COPY id_ed25519.pub $HOME/.ssh/id_ed25519.pub
 
-# Run the cron service and tail both logs to keep the container running
-CMD cron && tail -f /var/log/cron.log /var/log/github_backup.log
+# Run the cron service and tail logs to keep the container running
+CMD cron && tail -f /var/log/github_backup.log
