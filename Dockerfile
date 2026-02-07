@@ -25,7 +25,7 @@ COPY .env /tmp/.env
 RUN cat /tmp/.env >> /etc/environment && rm /tmp/.env
 
 # Add the cron job
-RUN echo "0 0 * * * /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1" >> /tmp/crontab && \
+RUN echo "12 0 * * * /usr/local/bin/github_backup_script.sh >> /var/log/github_backup.log 2>&1" >> /tmp/crontab && \
     crontab /tmp/crontab && rm /tmp/crontab
 
 # Create log files for script logs
